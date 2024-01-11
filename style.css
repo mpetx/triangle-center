@@ -1,0 +1,15 @@
+
+header h1 {
+    text-align: center;
+}
+
+main {
+    width: 75%;
+    margin: 0 auto;
+}
+
+@media (max-width: 15cm) {
+    main {
+	width: 97.5%;
+    }
+}
