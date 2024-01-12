@@ -1,4 +1,8 @@
 
+const segmentLength = (coord) => {
+    return Math.sqrt((coord[1][0] - coord[0][0]) ** 2 + (coord[1][1] - coord[0][1]) ** 2);
+};
+
 class Triangle {
 
     vertexAX; vertexAY;
@@ -25,6 +29,23 @@ class Triangle {
     get edgeB() { return [this.vertexC, this.vertexA]; }
     get edgeC() { return [this.vertexA, this.vertexB]; }
 
+    get edgeALength() { return segmentLength(this.edgeA); }
+    get edgeBLength() { return segmentLength(this.edgeB); }
+    get edgeCLength() { return segmentLength(this.edgeC); }
+
+    get angleA() {
+	return Math.acos((this.edgeBLength ** 2 + this.edgeCLength ** 2 - this.edgeALength ** 2) / (2 * this.edgeBLength * this.edgeCLength));
+    }
+
+    get angleB() {
+	return Math.acos((this.edgeCLength ** 2 + this.edgeALength ** 2 - this.edgeBLength ** 2) / (2 * this.edgeCLength * this.edgeALength));
+    }
+
+    get angleC() {
+	return Math.acos((this.edgeALength ** 2 + this.edgeBLength ** 2 - this.edgeCLength ** 2) / (2 * this.edgeALength * this.edgeBLength));
+    }
+    
+    
     fromBarycentric(a, b, c) {
 	const sum = a + b + c;
 	return [
@@ -37,6 +58,48 @@ class Triangle {
     get medianA() { return [this.vertexA, this.fromBarycentric(0, 1, 1)]; }
     get medianB() { return [this.vertexB, this.fromBarycentric(1, 0, 1)]; }
     get medianC() { return [this.vertexC, this.fromBarycentric(1, 1, 0)]; }
+
+    get incenter() {
+	return this.fromBarycentric(this.edgeALength, this.edgeBLength, this.edgeCLength);
+    }
+    
+    get internalAngleBisectorA() {
+	return [this.vertexA, this.fromBarycentric(0, this.edgeBLength, this.edgeCLength)];
+    }
+    
+    get internalAngleBisectorB() {
+	return [this.vertexB, this.fromBarycentric(this.edgeALength, 0, this.edgeCLength)];
+    }
+    
+    get internalAngleBisectorC() {
+	return [this.vertexC, this.fromBarycentric(this.edgeALength, this.edgeBLength, 0)];
+    }
+    
+    get incircleRadius() {
+	const s = (this.edgeALength + this.edgeBLength + this.edgeCLength) / 2;
+	return Math.sqrt((s - this.edgeALength) * (s - this.edgeBLength) * (s - this.edgeCLength) / s);
+    }
+
+    get incircle() { return [this.incenter, this.incircleRadius]; }
+
+    get incircleRadiusA() {
+	return [
+	    this.incenter,
+	    this.fromBarycentric(0, Math.tan(this.angleB / 2), Math.tan(this.angleC / 2))
+	];
+    }
+    get incircleRadiusB() {
+	return [
+	    this.incenter,
+	    this.fromBarycentric(Math.tan(this.angleA / 2), 0, Math.tan(this.angleC / 2))
+	];
+    }
+    get incircleRadiusC() {
+	return [
+	    this.incenter,
+	    this.fromBarycentric(Math.tan(this.angleA / 2), Math.tan(this.angleB / 2), 0)
+	];
+    }
     
 }
 
@@ -78,6 +141,13 @@ const setSegmentPosition = (id, coords) => {
     elt.setAttribute("y2", coords[1][1]);
 };
 
+const setCirclePosition = (id, coords) => {
+    const elt = document.getElementById(id);
+    elt.setAttribute("cx", coords[0][0]);
+    elt.setAttribute("cy", coords[0][1]);
+    elt.setAttribute("r", coords[1]);
+};
+
 const updateTriangle = () => {
     setPointPosition("triangle__vertex-a", triangle.vertexA);
     setPointPosition("triangle__vertex-b", triangle.vertexB);
@@ -85,6 +155,20 @@ const updateTriangle = () => {
     setSegmentPosition("triangle__edge-a", triangle.edgeA);
     setSegmentPosition("triangle__edge-b", triangle.edgeB);
     setSegmentPosition("triangle__edge-c", triangle.edgeC);
+    if (document.getElementById("incenter-config__incenter").checked)
+	setPointPosition("triangle__incenter", triangle.incenter);
+    if (document.getElementById("incenter-config__internal-angle-bisector").checked) {
+	setSegmentPosition("triangle__internal-angle-bisector-a", triangle.internalAngleBisectorA);
+	setSegmentPosition("triangle__internal-angle-bisector-b", triangle.internalAngleBisectorB);
+	setSegmentPosition("triangle__internal-angle-bisector-c", triangle.internalAngleBisectorC);
+    }
+    if (document.getElementById("incenter-config__incircle-radius")) {
+	setSegmentPosition("triangle__incircle-radius-a", triangle.incircleRadiusA);
+	setSegmentPosition("triangle__incircle-radius-b", triangle.incircleRadiusB);
+	setSegmentPosition("triangle__incircle-radius-c", triangle.incircleRadiusC);
+    }
+    if (document.getElementById("incenter-config__incircle").checked)
+	setCirclePosition("triangle__incircle", triangle.incircle);
     if (document.getElementById("centroid-config__centroid").checked)
 	setPointPosition("triangle__centroid", triangle.centroid);
     if (document.getElementById("centroid-config__median").checked) {
@@ -148,8 +232,15 @@ const triangleConfigurations = [
 	    ["centroid-config__centroid", "fill", ["triangle__centroid"]],
 	    ["centroid-config__median", "stroke", ["triangle__median-a", "triangle__median-b", "triangle__median-c"]]
 	]
+    ], [
+	"incenter-config__color",
+	[
+	    ["incenter-config__incenter", "fill", ["triangle__incenter"]],
+	    ["incenter-config__internal-angle-bisector", "stroke", ["triangle__internal-angle-bisector-a", "triangle__internal-angle-bisector-b", "triangle__internal-angle-bisector-c"]],
+	    ["incenter-config__incircle", "stroke", ["triangle__incircle"]],
+	    ["incenter-config__incircle-radius", "stroke", ["triangle__incircle-radius-a", "triangle__incircle-radius-b", "triangle__incircle-radius-c"]]
+	]
     ]
-	
 ];
 
 window.addEventListener("load", () => {
