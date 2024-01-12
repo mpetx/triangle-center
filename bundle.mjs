@@ -118,7 +118,23 @@ class Triangle {
     get circumcircleRadiusA() { return [this.vertexA, this.circumcenter]; }
     get circumcircleRadiusB() { return [this.vertexB, this.circumcenter]; }
     get circumcircleRadiusC() { return [this.vertexC, this.circumcenter]; }
-    
+
+    get orthocenter() {
+	return this.fromBarycentric(Math.tan(this.angleA), Math.tan(this.angleB), Math.tan(this.angleC));
+    }
+
+    get altitudeA1() {
+	return [this.vertexA, this.fromBarycentric(0, Math.tan(this.angleB), Math.tan(this.angleC))];
+    }
+    get altitudeB1() {
+	return [this.vertexB, this.fromBarycentric(Math.tan(this.angleA), 0, Math.tan(this.angleC))];
+    }
+    get altitudeC1() {
+	return [this.vertexC, this.fromBarycentric(Math.tan(this.angleA), Math.tan(this.angleB), 0)];
+    }
+    get altitudeA2() { return [this.vertexA, this.orthocenter]; }
+    get altitudeB2() { return [this.vertexB, this.orthocenter]; }
+    get altitudeC2() { return [this.vertexC, this.orthocenter]; }
 }
 
 const triangle = new Triangle(0, 0, 0, 0, 0, 0);
@@ -208,6 +224,16 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__circumcircle-radius-b", triangle.circumcircleRadiusB);
 	setSegmentPosition("triangle__circumcircle-radius-c", triangle.circumcircleRadiusC);
     }
+    if (document.getElementById("orthocenter-config__orthocenter").checked)
+	setPointPosition("triangle__orthocenter", triangle.orthocenter);
+    if (document.getElementById("orthocenter-config__altitude").checked) {
+	setSegmentPosition("triangle__altitude-a-1", triangle.altitudeA1);
+	setSegmentPosition("triangle__altitude-b-1", triangle.altitudeB1);
+	setSegmentPosition("triangle__altitude-c-1", triangle.altitudeC1);
+	setSegmentPosition("triangle__altitude-a-2", triangle.altitudeA2);
+	setSegmentPosition("triangle__altitude-b-2", triangle.altitudeB2);
+	setSegmentPosition("triangle__altitude-c-2", triangle.altitudeC2);
+    }
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -279,6 +305,12 @@ const triangleConfigurations = [
 	    ["circumcenter-config__circumcircle", "stroke", ["triangle__circumcircle"]],
 	    ["circumcenter-config__edge-bisector", "stroke", ["triangle__edge-bisector-a", "triangle__edge-bisector-b", "triangle__edge-bisector-c"]],
 	    ["circumcenter-config__circumcircle-radius", "stroke", ["triangle__circumcircle-radius-a", "triangle__circumcircle-radius-b", "triangle__circumcircle-radius-c"]]
+	]
+    ], [
+	"orthocenter-config__color",
+	[
+	    ["orthocenter-config__orthocenter", "fill", ["triangle__orthocenter"]],
+	    ["orthocenter-config__altitude", "stroke", ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]]
 	]
     ]
 ];

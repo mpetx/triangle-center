@@ -15,6 +15,15 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__altitude-a-1" stroke-width="1" />
+		    <line id="triangle__altitude-b-1" stroke-width="1" />
+		    <line id="triangle__altitude-c-1" stroke-width="1" />p
+		    <line id="triangle__altitude-a-2" stroke-width="1" />
+		    <line id="triangle__altitude-b-2" stroke-width="1" />
+		    <line id="triangle__altitude-c-2" stroke-width="1" />p
+		    <circle id="triangle__orthocenter" r="4" />
+		</g>
+		<g>
 		    <line id="triangle__edge-bisector-a" stroke-width="1" />
 		    <line id="triangle__edge-bisector-b" stroke-width="1" />
 		    <line id="triangle__edge-bisector-c" stroke-width="1" />
@@ -97,6 +106,17 @@
 		    <label>
 			<input type="checkbox" id="circumcenter-config__circumcircle-radius" />
 			外接円の半径
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="orthocenter-config__color" value="#800080" />
+		    <label>
+			<input type="checkbox" id="orthocenter-config__orthocenter" checked="checked" />
+			垂心
+		    </label>
+		    <label>
+			<input type="checkbox" id="orthocenter-config__altitude" checked="checked" />
+			垂線
 		    </label>
 		</div>
 	    </div>
