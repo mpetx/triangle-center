@@ -15,6 +15,12 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__nagel-cevian-a" stroke-width="1" />
+		    <line id="triangle__nagel-cevian-b" stroke-width="1" />
+		    <line id="triangle__nagel-cevian-c" stroke-width="1" />
+		    <circle id="triangle__nagel" r="4" />
+		</g>
+		<g>
 		    <line id="triangle__gergonne-cevian-a" stroke-width="1" />
 		    <line id="triangle__gergonne-cevian-b" stroke-width="1" />
 		    <line id="triangle__gergonne-cevian-c" stroke-width="1" />
@@ -185,6 +191,17 @@
 		    <label>
 			<input type="checkbox" id="gergonne-config__cevian" />
 			ジェルゴンヌ点を通るチェバ線
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="nagel-config__color" value="#808000" />
+		    <label>
+			<input type="checkbox" id="nagel-config__nagel" />
+			ナーゲル点
+		    </label>
+		    <label>
+			<input type="checkbox" id="nagel-config__cevian" />
+			ナーゲル点を通るチェバ線
 		    </label>
 		</div>
 	    </div>

@@ -228,6 +228,34 @@ class Triangle {
 	];
     }
 
+    get nagel() {
+	return this.fromBarycentric(
+	    1 / Math.tan(this.angleA / 2),
+	    1 / Math.tan(this.angleB / 2),
+	    1 / Math.tan(this.angleC / 2));
+    }
+
+    get nagelCevianA() {
+	return [
+	    this.vertexA,
+	    this.fromBarycentric(0, 1 / Math.tan(this.angleB / 2), 1 / Math.tan(this.angleC / 2))
+	];
+    }
+
+    get nagelCevianB() {
+	return [
+	    this.vertexB,
+	    this.fromBarycentric(1 / Math.tan(this.angleA / 2), 0, 1 / Math.tan(this.angleC / 2))
+	];
+    }
+
+    get nagelCevianC() {
+	return [
+	    this.vertexC,
+	    this.fromBarycentric(1 / Math.tan(this.angleA / 2), 1 / Math.tan(this.angleB / 2), 0)
+	];
+    }
+
 }
 
 const triangle = new Triangle(0, 0, 0, 0, 0, 0);
@@ -355,6 +383,13 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__gergonne-cevian-b", triangle.gergonneCevianB);
 	setSegmentPosition("triangle__gergonne-cevian-c", triangle.gergonneCevianC);
     }
+    if (document.getElementById("nagel-config__nagel").checked)
+	setPointPosition("triangle__nagel", triangle.nagel);
+    if (document.getElementById("nagel-config__cevian").checked) {
+	setSegmentPosition("triangle__nagel-cevian-a", triangle.nagelCevianA);
+	setSegmentPosition("triangle__nagel-cevian-b", triangle.nagelCevianB);
+	setSegmentPosition("triangle__nagel-cevian-c", triangle.nagelCevianC);
+    }
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -456,6 +491,12 @@ const triangleConfigurations = [
 	[
 	    ["gergonne-config__gergonne", "fill", ["triangle__gergonne"]],
 	    ["gergonne-config__cevian", "stroke", ["triangle__gergonne-cevian-a", "triangle__gergonne-cevian-b", "triangle__gergonne-cevian-c"]]
+	]
+    ], [
+	"nagel-config__color",
+	[
+	    ["nagel-config__nagel", "fill", ["triangle__nagel"]],
+	    ["nagel-config__cevian", "stroke", ["triangle__nagel-cevian-a", "triangle__nagel-cevian-b", "triangle__nagel-cevian-c"]]
 	]
     ]
 ];
