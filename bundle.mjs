@@ -136,6 +136,39 @@ class Triangle {
     get altitudeB2() { return [this.vertexB, this.orthocenter]; }
     get altitudeC2() { return [this.vertexC, this.orthocenter]; }
 
+    get excenterA() {
+	return this.fromBarycentric(-this.edgeALength, this.edgeBLength, this.edgeCLength);
+    }
+
+    get excenterB() {
+	return this.fromBarycentric(this.edgeALength, -this.edgeBLength, this.edgeCLength);
+    }
+
+    get excenterC() {
+	return this.fromBarycentric(this.edgeALength, this.edgeBLength, -this.edgeCLength);
+    }
+
+    get excircleRadiusA() {
+	const s = (this.edgeALength + this.edgeBLength + this.edgeCLength) / 2;
+	return Math.sqrt(s * (s - this.edgeBLength) * (s - this.edgeCLength) / (s - this.edgeALength));
+    }
+
+    get excircleA() { return [this.excenterA, this.excircleRadiusA]; }
+
+    get excircleRadiusB() {
+	const s = (this.edgeALength + this.edgeBLength + this.edgeCLength) / 2;
+	return Math.sqrt(s * (s - this.edgeCLength) * (s - this.edgeALength) / (s - this.edgeBLength));
+    }
+
+    get excircleB() { return [this.excenterB, this.excircleRadiusB]; }
+    
+    get excircleRadiusC() {
+	const s = (this.edgeALength + this.edgeBLength + this.edgeCLength) / 2;
+	return Math.sqrt(s * (s - this.edgeALength) * (s - this.edgeBLength) / (s - this.edgeCLength));
+    }
+
+    get excircleC() { return [this.excenterC, this.excircleRadiusC]; }
+    
     get ninePointCircleCenter() {
 	return this.fromBarycentric(
 	    this.edgeALength * Math.cos(this.angleB - this.angleC),
@@ -294,6 +327,16 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__altitude-b-2", triangle.altitudeB2);
 	setSegmentPosition("triangle__altitude-c-2", triangle.altitudeC2);
     }
+    if (document.getElementById("excenter-config__excenter").checked) {
+	setPointPosition("triangle__excenter-a", triangle.excenterA);
+	setPointPosition("triangle__excenter-b", triangle.excenterB);
+	setPointPosition("triangle__excenter-c", triangle.excenterC);
+    }
+    if (document.getElementById("excenter-config__excircle").checked) {
+	setCirclePosition("triangle__excircle-a", triangle.excircleA);
+	setCirclePosition("triangle__excircle-b", triangle.excircleB);
+	setCirclePosition("triangle__excircle-c", triangle.excircleC);
+    }
     if (document.getElementById("nine-point-circle-config__center").checked)
 	setPointPosition("triangle__nine-point-circle-center", triangle.ninePointCircleCenter);
     if (document.getElementById("nine-point-circle-config__circle").checked)
@@ -391,6 +434,12 @@ const triangleConfigurations = [
 	    ["orthocenter-config__altitude", "stroke", ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]]
 	]
     ], [
+	"excenter-config__color",
+	[
+	    ["excenter-config__excenter", "fill", ["triangle__excenter-a", "triangle__excenter-b", "triangle__excenter-c"]],
+	    ["excenter-config__excircle", "stroke", ["triangle__excircle-a", "triangle__excircle-b", "triangle__excircle-c"]]
+	]
+    ],[
 	"nine-point-circle-config__color",
 	[
 	    ["nine-point-circle-config__center", "fill", ["triangle__nine-point-circle-center"]],
