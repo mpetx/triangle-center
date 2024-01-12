@@ -15,6 +15,12 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__median-a" stroke-width="1" />
+		    <line id="triangle__median-b" stroke-width="1" />
+		    <line id="triangle__median-c" stroke-width="1" />
+		    <circle id="triangle__centroid" r="4" />
+		</g>
+		<g>
 		    <line id="triangle__edge-a" stroke="black" stroke-width="2" />
 		    <line id="triangle__edge-b" stroke="black" stroke-width="2" />
 		    <line id="triangle__edge-c" stroke="black" stroke-width="2" />
@@ -23,6 +29,19 @@
 		    <circle id="triangle__vertex-c" r="4" fill="black" />
 		</g>
 	    </svg>
+	    <div>
+		<div class="triangle-config-container">
+		    <input type="color" id="centroid-config__color" value="#0000cd" />
+		    <label>
+			<input type="checkbox" id="centroid-config__centroid" checked="checked" />
+			重心
+		    </label>
+		    <label>
+			<input type="checkbox" id="centroid-config__median" checked="checked" />
+			中線
+		    </label>
+		</div>
+	    </div>
 	</main>
     </body>
 </html>
