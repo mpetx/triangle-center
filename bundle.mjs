@@ -100,6 +100,24 @@ class Triangle {
 	    this.fromBarycentric(Math.tan(this.angleA / 2), Math.tan(this.angleB / 2), 0)
 	];
     }
+
+    get circumcenter() {
+	return this.fromBarycentric(Math.sin(this.angleA * 2), Math.sin(this.angleB * 2), Math.sin(this.angleC * 2));
+    }
+
+    get circumcircleRadius() {
+	return this.incircleRadius / (Math.cos(this.angleA) + Math.cos(this.angleB) + Math.cos(this.angleC) - 1);
+    }
+
+    get circumcircle() { return [this.circumcenter, this.circumcircleRadius]; }
+
+    get edgeBisectorA() { return [this.circumcenter, this.fromBarycentric(0, 1, 1)]; }
+    get edgeBisectorB() { return [this.circumcenter, this.fromBarycentric(1, 0, 1)]; }
+    get edgeBisectorC() { return [this.circumcenter, this.fromBarycentric(1, 1, 0)]; }
+
+    get circumcircleRadiusA() { return [this.vertexA, this.circumcenter]; }
+    get circumcircleRadiusB() { return [this.vertexB, this.circumcenter]; }
+    get circumcircleRadiusC() { return [this.vertexC, this.circumcenter]; }
     
 }
 
@@ -176,6 +194,20 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__median-b", triangle.medianB);
 	setSegmentPosition("triangle__median-c", triangle.medianC);
     }
+    if (document.getElementById("circumcenter-config__circumcenter").checked)
+	setPointPosition("triangle__circumcenter", triangle.circumcenter);
+    if (document.getElementById("circumcenter-config__circumcircle").checked)
+	setCirclePosition("triangle__circumcircle", triangle.circumcircle);
+    if (document.getElementById("circumcenter-config__edge-bisector").checked) {
+	setSegmentPosition("triangle__edge-bisector-a", triangle.edgeBisectorA);
+	setSegmentPosition("triangle__edge-bisector-b", triangle.edgeBisectorB);
+	setSegmentPosition("triangle__edge-bisector-c", triangle.edgeBisectorC);
+    }
+    if (document.getElementById("circumcenter-config__circumcircle-radius").checked) {
+	setSegmentPosition("triangle__circumcircle-radius-a", triangle.circumcircleRadiusA);
+	setSegmentPosition("triangle__circumcircle-radius-b", triangle.circumcircleRadiusB);
+	setSegmentPosition("triangle__circumcircle-radius-c", triangle.circumcircleRadiusC);
+    }
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -239,6 +271,14 @@ const triangleConfigurations = [
 	    ["incenter-config__internal-angle-bisector", "stroke", ["triangle__internal-angle-bisector-a", "triangle__internal-angle-bisector-b", "triangle__internal-angle-bisector-c"]],
 	    ["incenter-config__incircle", "stroke", ["triangle__incircle"]],
 	    ["incenter-config__incircle-radius", "stroke", ["triangle__incircle-radius-a", "triangle__incircle-radius-b", "triangle__incircle-radius-c"]]
+	]
+    ], [
+	"circumcenter-config__color",
+	[
+	    ["circumcenter-config__circumcenter", "fill", ["triangle__circumcenter"]],
+	    ["circumcenter-config__circumcircle", "stroke", ["triangle__circumcircle"]],
+	    ["circumcenter-config__edge-bisector", "stroke", ["triangle__edge-bisector-a", "triangle__edge-bisector-b", "triangle__edge-bisector-c"]],
+	    ["circumcenter-config__circumcircle-radius", "stroke", ["triangle__circumcircle-radius-a", "triangle__circumcircle-radius-b", "triangle__circumcircle-radius-c"]]
 	]
     ]
 ];

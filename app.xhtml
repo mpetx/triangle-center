@@ -15,6 +15,16 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__edge-bisector-a" stroke-width="1" />
+		    <line id="triangle__edge-bisector-b" stroke-width="1" />
+		    <line id="triangle__edge-bisector-c" stroke-width="1" />
+		    <line id="triangle__circumcircle-radius-a" stroke-width="1" />
+		    <line id="triangle__circumcircle-radius-b" stroke-width="1" />
+		    <line id="triangle__circumcircle-radius-c" stroke-width="1" />
+		    <circle id="triangle__circumcircle" stroke-width="1" fill="transparent" />
+		    <circle id="triangle__circumcenter" r="4" />
+		</g>
+		<g>
 		    <line id="triangle__median-a" stroke-width="1" />
 		    <line id="triangle__median-b" stroke-width="1" />
 		    <line id="triangle__median-c" stroke-width="1" />
@@ -68,6 +78,25 @@
 		    <label>
 			<input type="checkbox" id="centroid-config__median" checked="checked" />
 			中線
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="circumcenter-config__color" value="#ff0000" />
+		    <label>
+			<input type="checkbox" id="circumcenter-config__circumcenter" />
+			外心
+		    </label>
+		    <label>
+			<input type="checkbox" id="circumcenter-config__circumcircle" />
+			外接円
+		    </label>
+		    <label>
+			<input type="checkbox" id="circumcenter-config__edge-bisector" />
+			辺の垂直二等分線
+		    </label>
+		    <label>
+			<input type="checkbox" id="circumcenter-config__circumcircle-radius" />
+			外接円の半径
 		    </label>
 		</div>
 	    </div>
