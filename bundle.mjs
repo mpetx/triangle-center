@@ -135,6 +135,66 @@ class Triangle {
     get altitudeA2() { return [this.vertexA, this.orthocenter]; }
     get altitudeB2() { return [this.vertexB, this.orthocenter]; }
     get altitudeC2() { return [this.vertexC, this.orthocenter]; }
+
+    get ninePointCircleCenter() {
+	return this.fromBarycentric(
+	    this.edgeALength * Math.cos(this.angleB - this.angleC),
+	    this.edgeBLength * Math.cos(this.angleC - this.angleA),
+	    this.edgeCLength * Math.cos(this.angleA - this.angleB));
+    }
+
+    get ninePointCircleRadius() {
+	return this.circumcircleRadius / 2;
+    }
+    
+    get ninePointCircle() {
+	return [this.ninePointCircleCenter, this.ninePointCircleRadius];
+    }
+
+    get lemoine() {
+	return this.fromBarycentric(this.edgeALength ** 2, this.edgeBLength ** 2, this.edgeCLength ** 2);
+    }
+
+    get symmedianA() {
+	return [this.vertexA, this.fromBarycentric(0, this.edgeBLength ** 2, this.edgeCLength ** 2)];
+    }
+
+    get symmedianB() {
+	return [this.vertexB, this.fromBarycentric(this.edgeALength ** 2, 0, this.edgeCLength ** 2)];
+    }
+
+    get symmedianC() {
+	return [this.vertexC, this.fromBarycentric(this.edgeALength ** 2, this.edgeBLength ** 2, 0)];
+    }
+
+    get gergonne() {
+	return this.fromBarycentric(
+	    Math.tan(this.angleA / 2),
+	    Math.tan(this.angleB / 2),
+	    Math.tan(this.angleC / 2));
+    }
+
+    get gergonneCevianA() {
+	return [
+	    this.vertexA,
+	    this.fromBarycentric(0, Math.tan(this.angleB / 2), Math.tan(this.angleC / 2))
+	];
+    }
+
+    get gergonneCevianB() {
+	return [
+	    this.vertexB,
+	    this.fromBarycentric(Math.tan(this.angleA / 2), 0, Math.tan(this.angleC / 2))
+	];
+    }
+
+    get gergonneCevianC() {
+	return [
+	    this.vertexC,
+	    this.fromBarycentric(Math.tan(this.angleA / 2), Math.tan(this.angleB / 2), 0)
+	];
+    }
+
 }
 
 const triangle = new Triangle(0, 0, 0, 0, 0, 0);
@@ -234,6 +294,24 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__altitude-b-2", triangle.altitudeB2);
 	setSegmentPosition("triangle__altitude-c-2", triangle.altitudeC2);
     }
+    if (document.getElementById("nine-point-circle-config__center").checked)
+	setPointPosition("triangle__nine-point-circle-center", triangle.ninePointCircleCenter);
+    if (document.getElementById("nine-point-circle-config__circle").checked)
+	setCirclePosition("triangle__nine-point-circle", triangle.ninePointCircle);
+    if (document.getElementById("lemoine-config__lemoine").checked)
+	setPointPosition("triangle__lemoine", triangle.lemoine);
+    if (document.getElementById("lemoine-config__symmedian").checked) {
+	setSegmentPosition("triangle__symmedian-a", triangle.symmedianA);
+	setSegmentPosition("triangle__symmedian-b", triangle.symmedianB);
+	setSegmentPosition("triangle__symmedian-c", triangle.symmedianC);
+    }
+    if (document.getElementById("gergonne-config__gergonne").checked)
+	setPointPosition("triangle__gergonne", triangle.gergonne);
+    if (document.getElementById("gergonne-config__cevian").checked) {
+	setSegmentPosition("triangle__gergonne-cevian-a", triangle.gergonneCevianA);
+	setSegmentPosition("triangle__gergonne-cevian-b", triangle.gergonneCevianB);
+	setSegmentPosition("triangle__gergonne-cevian-c", triangle.gergonneCevianC);
+    }
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -311,6 +389,24 @@ const triangleConfigurations = [
 	[
 	    ["orthocenter-config__orthocenter", "fill", ["triangle__orthocenter"]],
 	    ["orthocenter-config__altitude", "stroke", ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]]
+	]
+    ], [
+	"nine-point-circle-config__color",
+	[
+	    ["nine-point-circle-config__center", "fill", ["triangle__nine-point-circle-center"]],
+	    ["nine-point-circle-config__circle", "stroke", ["triangle__nine-point-circle"]]
+	]
+    ], [
+	"lemoine-config__color",
+	[
+	    ["lemoine-config__lemoine", "fill", ["triangle__lemoine"]],
+	    ["lemoine-config__symmedian", "stroke", ["triangle__symmedian-a", "triangle__symmedian-b", "triangle__symmedian-c"]]
+	]
+    ], [
+	"gergonne-config__color",
+	[
+	    ["gergonne-config__gergonne", "fill", ["triangle__gergonne"]],
+	    ["gergonne-config__cevian", "stroke", ["triangle__gergonne-cevian-a", "triangle__gergonne-cevian-b", "triangle__gergonne-cevian-c"]]
 	]
     ]
 ];

@@ -15,6 +15,22 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__gergonne-cevian-a" stroke-width="1" />
+		    <line id="triangle__gergonne-cevian-b" stroke-width="1" />
+		    <line id="triangle__gergonne-cevian-c" stroke-width="1" />
+		    <circle id="triangle__gergonne" r="4" />
+		</g>
+		<g>
+		    <line id="triangle__symmedian-a" stroke-width="1" />
+		    <line id="triangle__symmedian-b" stroke-width="1" />
+		    <line id="triangle__symmedian-c" stroke-width="1" />
+		    <circle id="triangle__lemoine" r="4" />
+		</g>
+		<g>
+		    <circle id="triangle__nine-point-circle" fill="transparent" />
+		    <circle id="triangle__nine-point-circle-center" r="4" />
+		</g>
+		<g>
 		    <line id="triangle__altitude-a-1" stroke-width="1" />
 		    <line id="triangle__altitude-b-1" stroke-width="1" />
 		    <line id="triangle__altitude-c-1" stroke-width="1" />p
@@ -117,6 +133,39 @@
 		    <label>
 			<input type="checkbox" id="orthocenter-config__altitude" checked="checked" />
 			垂線
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="nine-point-circle-config__color" value="#ff1493" />
+		    <label>
+			<input type="checkbox" id="nine-point-circle-config__center" />
+			九点円の中心
+		    </label>
+		    <label>
+			<input type="checkbox" id="nine-point-circle-config__circle" />
+			九点円
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="lemoine-config__color" value="#00ffff" />
+		    <label>
+			<input type="checkbox" id="lemoine-config__lemoine" />
+			ルモワンヌ点
+		    </label>
+		    <label>
+			<input type="checkbox" id="lemoine-config__symmedian" />
+			類似中線
+		    </label>
+		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="gergonne-config__color" value="#ff8000" />
+		    <label>
+			<input type="checkbox" id="gergonne-config__gergonne" />
+			ジュルゴンヌ点
+		    </label>
+		    <label>
+			<input type="checkbox" id="gergonne-config__cevian" />
+			ジュルゴンヌ点を通るチェバ線
 		    </label>
 		</div>
 	    </div>
