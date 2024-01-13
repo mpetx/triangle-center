@@ -192,6 +192,26 @@ class Triangle {
 
     get excircleC() { return [this.excenterC, this.excircleRadiusC]; }
 
+    get excircleRadiusAA() { return [this.excenterA, this.fromBarycentric(0, 1 / Math.tan(this.angleB / 2), 1 / Math.tan(this.angleC / 2))]; }
+    get excircleRadiusAB() { return [this.excenterA, this.fromBarycentric(-Math.tan(this.angleA / 2), 0, 1 / Math.tan(this.angleC / 2))]; }
+    get excircleRadiusAC() { return [this.excenterA, this.fromBarycentric(-Math.tan(this.angleA / 2), 1 / Math.tan(this.angleB / 2), 0)]; }
+    get excircleRadiusBA() { return [this.excenterB, this.fromBarycentric(0, -Math.tan(this.angleB / 2), 1 / Math.tan(this.angleC / 2))]; }
+    get excircleRadiusBB() { return [this.excenterB, this.fromBarycentric(1 / Math.tan(this.angleA / 2), 0, 1 / Math.tan(this.angleC / 2))]; }
+    get excircleRadiusBC() { return [this.excenterB, this.fromBarycentric(1 / Math.tan(this.angleA / 2), -Math.tan(this.angleB / 2), 0)]; }
+    get excircleRadiusCA() { return [this.excenterC, this.fromBarycentric(0, 1 / Math.tan(this.angleB / 2), -Math.tan(this.angleC / 2))]; }
+    get excircleRadiusCB() { return [this.excenterC, this.fromBarycentric(1 / Math.tan(this.angleA / 2), 0, -Math.tan(this.angleC / 2))]; }
+    get excircleRadiusCC() { return [this.excenterC, this.fromBarycentric(1 / Math.tan(this.angleA / 2), 1 / Math.tan(this.angleB / 2), 0)]; }
+    
+    get externalAngleBisectorAA() { return [this.vertexA, this.excenterA]; }
+    get externalAngleBisectorAB() { return [this.vertexB, this.excenterA]; }
+    get externalAngleBisectorAC() { return [this.vertexC, this.excenterA]; }
+    get externalAngleBisectorBA() { return [this.vertexA, this.excenterB]; }
+    get externalAngleBisectorBB() { return [this.vertexB, this.excenterB]; }
+    get externalAngleBisectorBC() { return [this.vertexC, this.excenterB]; }
+    get externalAngleBisectorCA() { return [this.vertexA, this.excenterC]; }
+    get externalAngleBisectorCB() { return [this.vertexB, this.excenterC]; }
+    get externalAngleBisectorCC() { return [this.vertexC, this.excenterC]; }
+    
     get ninePointCircleCenter() { return this.fromTriangleCenterFunction(ninePointTriangleCenterFunction); }
 
     get ninePointCircleRadius() {
@@ -327,6 +347,28 @@ const updateTriangle = () => {
 	setCirclePosition("triangle__excircle-b", triangle.excircleB);
 	setCirclePosition("triangle__excircle-c", triangle.excircleC);
     }
+    if (document.getElementById("excenter-config__external-angle-bisector").checked) {
+	setSegmentPosition("triangle__external-angle-bisector-aa", triangle.externalAngleBisectorAA);
+	setSegmentPosition("triangle__external-angle-bisector-ab", triangle.externalAngleBisectorAB);
+	setSegmentPosition("triangle__external-angle-bisector-ac", triangle.externalAngleBisectorAC);
+	setSegmentPosition("triangle__external-angle-bisector-ba", triangle.externalAngleBisectorBA);
+	setSegmentPosition("triangle__external-angle-bisector-bb", triangle.externalAngleBisectorBB);
+	setSegmentPosition("triangle__external-angle-bisector-bc", triangle.externalAngleBisectorBC);
+	setSegmentPosition("triangle__external-angle-bisector-ca", triangle.externalAngleBisectorCA);
+	setSegmentPosition("triangle__external-angle-bisector-cb", triangle.externalAngleBisectorCB);
+	setSegmentPosition("triangle__external-angle-bisector-cc", triangle.externalAngleBisectorCC);
+    }
+    if (document.getElementById("excenter-config__excircle-radius").checked) {
+	setSegmentPosition("triangle__excircle-radius-aa", triangle.excircleRadiusAA);
+	setSegmentPosition("triangle__excircle-radius-ab", triangle.excircleRadiusAB);
+	setSegmentPosition("triangle__excircle-radius-ac", triangle.excircleRadiusAC);
+	setSegmentPosition("triangle__excircle-radius-ba", triangle.excircleRadiusBA);
+	setSegmentPosition("triangle__excircle-radius-bb", triangle.excircleRadiusBB);
+	setSegmentPosition("triangle__excircle-radius-bc", triangle.excircleRadiusBC);
+	setSegmentPosition("triangle__excircle-radius-ca", triangle.excircleRadiusCA);
+	setSegmentPosition("triangle__excircle-radius-cb", triangle.excircleRadiusCB);
+	setSegmentPosition("triangle__excircle-radius-cc", triangle.excircleRadiusCC);
+    }
     if (document.getElementById("nine-point-circle-config__center").checked)
 	setPointPosition("triangle__nine-point-circle-center", triangle.ninePointCircleCenter);
     if (document.getElementById("nine-point-circle-config__circle").checked)
@@ -434,7 +476,15 @@ const triangleConfigurations = [
 	"excenter-config__color",
 	[
 	    ["excenter-config__excenter", "fill", ["triangle__excenter-a", "triangle__excenter-b", "triangle__excenter-c"]],
-	    ["excenter-config__excircle", "stroke", ["triangle__excircle-a", "triangle__excircle-b", "triangle__excircle-c"]]
+	    ["excenter-config__excircle", "stroke", ["triangle__excircle-a", "triangle__excircle-b", "triangle__excircle-c"]],
+	    ["excenter-config__external-angle-bisector", "stroke",
+	     ["triangle__external-angle-bisector-aa", "triangle__external-angle-bisector-ab", "triangle__external-angle-bisector-ac",
+	      "triangle__external-angle-bisector-ba", "triangle__external-angle-bisector-bb", "triangle__external-angle-bisector-bc",
+	      "triangle__external-angle-bisector-ca", "triangle__external-angle-bisector-cb", "triangle__external-angle-bisector-cc"]],
+	    ["excenter-config__excircle-radius", "stroke",
+	     ["triangle__excircle-radius-aa", "triangle__excircle-radius-ab", "triangle__excircle-radius-ac",
+	      "triangle__excircle-radius-ba", "triangle__excircle-radius-bb", "triangle__excircle-radius-bc",
+	      "triangle__excircle-radius-ca", "triangle__excircle-radius-cb", "triangle__excircle-radius-cc"]]
 	]
     ],[
 	"nine-point-circle-config__color",
