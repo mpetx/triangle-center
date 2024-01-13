@@ -3,6 +3,15 @@ const segmentLength = (coord) => {
     return Math.sqrt((coord[1][0] - coord[0][0]) ** 2 + (coord[1][1] - coord[0][1]) ** 2);
 };
 
+const centroidTriangleCenterFunction = (a, b, c, anga, angb, angc) => 1;
+const incenterTriangleCenterFunction = (a, b, c, anga, angb, angc) => a;
+const circumcenterTriangleCenterFunction = (a, b, c, anga, angb, angc) => Math.sin(anga * 2);
+const orthocenterTriangleCenterFunction = (a, b, c, anga, angb, angc) => Math.tan(anga);
+const ninePointTriangleCenterFunction = (a, b, c, anga, angb, angc) => a * Math.cos(angb - angc);
+const lemoineTriangleCenterFunction = (a, b, c, anga, angb, angc) => a ** 2;
+const gergonneTriangleCenterFunction = (a, b, c, anga, angb, angc) => Math.tan(anga / 2);
+const nagelTriangleCenterFunction = (a, b, c, anga, angb, angc) => 1 / Math.tan(anga / 2);
+
 class Triangle {
 
     vertexAX; vertexAY;
@@ -45,7 +54,6 @@ class Triangle {
 	return Math.acos((this.edgeALength ** 2 + this.edgeBLength ** 2 - this.edgeCLength ** 2) / (2 * this.edgeALength * this.edgeBLength));
     }
     
-    
     fromBarycentric(a, b, c) {
 	const sum = a + b + c;
 	return [
@@ -54,26 +62,49 @@ class Triangle {
 	];
     }
 
-    get centroid() { return this.fromBarycentric(1, 1, 1); }
-    get medianA() { return [this.vertexA, this.fromBarycentric(0, 1, 1)]; }
-    get medianB() { return [this.vertexB, this.fromBarycentric(1, 0, 1)]; }
-    get medianC() { return [this.vertexC, this.fromBarycentric(1, 1, 0)]; }
+    fromTriangleCenterFunction(f) {
+	return this.fromBarycentric(
+	    f(this.edgeALength, this.edgeBLength, this.edgeCLength, this.angleA, this.angleB, this.angleC),
+	    f(this.edgeBLength, this.edgeCLength, this.edgeALength, this.angleB, this.angleC, this.angleA),
+	    f(this.edgeCLength, this.edgeALength, this.edgeBLength, this.angleC, this.angleA, this.angleB));
+    }
 
-    get incenter() {
-	return this.fromBarycentric(this.edgeALength, this.edgeBLength, this.edgeCLength);
+    cevianAFromTriangleCenterFunction(f) {
+	return [
+	    this.vertexA,
+	    this.fromBarycentric(
+		0,
+		f(this.edgeBLength, this.edgeCLength, this.edgeALength, this.angleB, this.angleC, this.angleA),
+		f(this.edgeCLength, this.edgeALength, this.edgeBLength, this.angleC, this.angleA, this.angleB))];
+    }
+
+    cevianBFromTriangleCenterFunction(f) {
+	return [
+	    this.vertexB,
+	    this.fromBarycentric(
+		f(this.edgeALength, this.edgeBLength, this.edgeCLength, this.angleA, this.angleB, this.angleC),
+		0,
+		f(this.edgeCLength, this.edgeALength, this.edgeBLength, this.angleC, this.angleA, this.angleB))];
+    }
+
+    cevianCFromTriangleCenterFunction(f) {
+	return [
+	    this.vertexC,
+	    this.fromBarycentric(
+		f(this.edgeALength, this.edgeBLength, this.edgeCLength, this.angleA, this.angleB, this.angleC),
+		f(this.edgeBLength, this.edgeCLength, this.edgeALength, this.angleB, this.angleC, this.angleA),
+		0)];
     }
     
-    get internalAngleBisectorA() {
-	return [this.vertexA, this.fromBarycentric(0, this.edgeBLength, this.edgeCLength)];
-    }
-    
-    get internalAngleBisectorB() {
-	return [this.vertexB, this.fromBarycentric(this.edgeALength, 0, this.edgeCLength)];
-    }
-    
-    get internalAngleBisectorC() {
-	return [this.vertexC, this.fromBarycentric(this.edgeALength, this.edgeBLength, 0)];
-    }
+    get centroid() { return this.fromTriangleCenterFunction(centroidTriangleCenterFunction); }
+    get medianA() { return this.cevianAFromTriangleCenterFunction(centroidTriangleCenterFunction); }
+    get medianB() { return this.cevianBFromTriangleCenterFunction(centroidTriangleCenterFunction); }
+    get medianC() { return this.cevianCFromTriangleCenterFunction(centroidTriangleCenterFunction); }
+
+    get incenter() { return this.fromTriangleCenterFunction(incenterTriangleCenterFunction); }
+    get internalAngleBisectorA() { return this.cevianAFromTriangleCenterFunction(incenterTriangleCenterFunction); }
+    get internalAngleBisectorB() { return this.cevianBFromTriangleCenterFunction(incenterTriangleCenterFunction); }
+    get internalAngleBisectorC() { return this.cevianCFromTriangleCenterFunction(incenterTriangleCenterFunction); }
     
     get incircleRadius() {
 	const s = (this.edgeALength + this.edgeBLength + this.edgeCLength) / 2;
@@ -101,9 +132,8 @@ class Triangle {
 	];
     }
 
-    get circumcenter() {
-	return this.fromBarycentric(Math.sin(this.angleA * 2), Math.sin(this.angleB * 2), Math.sin(this.angleC * 2));
-    }
+    get circumcenter() { return this.fromTriangleCenterFunction(circumcenterTriangleCenterFunction); }
+
 
     get circumcircleRadius() {
 	return this.incircleRadius / (Math.cos(this.angleA) + Math.cos(this.angleB) + Math.cos(this.angleC) - 1);
@@ -119,19 +149,12 @@ class Triangle {
     get circumcircleRadiusB() { return [this.vertexB, this.circumcenter]; }
     get circumcircleRadiusC() { return [this.vertexC, this.circumcenter]; }
 
-    get orthocenter() {
-	return this.fromBarycentric(Math.tan(this.angleA), Math.tan(this.angleB), Math.tan(this.angleC));
-    }
+    get orthocenter() { return this.fromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
 
-    get altitudeA1() {
-	return [this.vertexA, this.fromBarycentric(0, Math.tan(this.angleB), Math.tan(this.angleC))];
-    }
-    get altitudeB1() {
-	return [this.vertexB, this.fromBarycentric(Math.tan(this.angleA), 0, Math.tan(this.angleC))];
-    }
-    get altitudeC1() {
-	return [this.vertexC, this.fromBarycentric(Math.tan(this.angleA), Math.tan(this.angleB), 0)];
-    }
+    get altitudeA1() { return this.cevianAFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
+    get altitudeB1() { return this.cevianBFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
+    get altitudeC1() { return this.cevianCFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
+
     get altitudeA2() { return [this.vertexA, this.orthocenter]; }
     get altitudeB2() { return [this.vertexB, this.orthocenter]; }
     get altitudeC2() { return [this.vertexC, this.orthocenter]; }
@@ -168,13 +191,8 @@ class Triangle {
     }
 
     get excircleC() { return [this.excenterC, this.excircleRadiusC]; }
-    
-    get ninePointCircleCenter() {
-	return this.fromBarycentric(
-	    this.edgeALength * Math.cos(this.angleB - this.angleC),
-	    this.edgeBLength * Math.cos(this.angleC - this.angleA),
-	    this.edgeCLength * Math.cos(this.angleA - this.angleB));
-    }
+
+    get ninePointCircleCenter() { return this.fromTriangleCenterFunction(ninePointTriangleCenterFunction); }
 
     get ninePointCircleRadius() {
 	return this.circumcircleRadius / 2;
@@ -184,77 +202,21 @@ class Triangle {
 	return [this.ninePointCircleCenter, this.ninePointCircleRadius];
     }
 
-    get lemoine() {
-	return this.fromBarycentric(this.edgeALength ** 2, this.edgeBLength ** 2, this.edgeCLength ** 2);
-    }
+    get lemoine() { return this.fromTriangleCenterFunction(lemoineTriangleCenterFunction); }
+    get symmedianA() { return this.cevianAFromTriangleCenterFunction(lemoineTriangleCenterFunction); }
+    get symmedianB() { return this.cevianCFromTriangleCenterFunction(lemoineTriangleCenterFunction); }
+    get symmedianC() { return this.cevianBFromTriangleCenterFunction(lemoineTriangleCenterFunction); }
 
-    get symmedianA() {
-	return [this.vertexA, this.fromBarycentric(0, this.edgeBLength ** 2, this.edgeCLength ** 2)];
-    }
+    get gergonne() { return this.fromTriangleCenterFunction(gergonneTriangleCenterFunction); }
+    get gergonneCevianA() { return this.cevianAFromTriangleCenterFunction(gergonneTriangleCenterFunction); }
+    get gergonneCevianB() { return this.cevianBFromTriangleCenterFunction(gergonneTriangleCenterFunction); }
+    get gergonneCevianC() { return this.cevianCFromTriangleCenterFunction(gergonneTriangleCenterFunction); }
 
-    get symmedianB() {
-	return [this.vertexB, this.fromBarycentric(this.edgeALength ** 2, 0, this.edgeCLength ** 2)];
-    }
 
-    get symmedianC() {
-	return [this.vertexC, this.fromBarycentric(this.edgeALength ** 2, this.edgeBLength ** 2, 0)];
-    }
-
-    get gergonne() {
-	return this.fromBarycentric(
-	    Math.tan(this.angleA / 2),
-	    Math.tan(this.angleB / 2),
-	    Math.tan(this.angleC / 2));
-    }
-
-    get gergonneCevianA() {
-	return [
-	    this.vertexA,
-	    this.fromBarycentric(0, Math.tan(this.angleB / 2), Math.tan(this.angleC / 2))
-	];
-    }
-
-    get gergonneCevianB() {
-	return [
-	    this.vertexB,
-	    this.fromBarycentric(Math.tan(this.angleA / 2), 0, Math.tan(this.angleC / 2))
-	];
-    }
-
-    get gergonneCevianC() {
-	return [
-	    this.vertexC,
-	    this.fromBarycentric(Math.tan(this.angleA / 2), Math.tan(this.angleB / 2), 0)
-	];
-    }
-
-    get nagel() {
-	return this.fromBarycentric(
-	    1 / Math.tan(this.angleA / 2),
-	    1 / Math.tan(this.angleB / 2),
-	    1 / Math.tan(this.angleC / 2));
-    }
-
-    get nagelCevianA() {
-	return [
-	    this.vertexA,
-	    this.fromBarycentric(0, 1 / Math.tan(this.angleB / 2), 1 / Math.tan(this.angleC / 2))
-	];
-    }
-
-    get nagelCevianB() {
-	return [
-	    this.vertexB,
-	    this.fromBarycentric(1 / Math.tan(this.angleA / 2), 0, 1 / Math.tan(this.angleC / 2))
-	];
-    }
-
-    get nagelCevianC() {
-	return [
-	    this.vertexC,
-	    this.fromBarycentric(1 / Math.tan(this.angleA / 2), 1 / Math.tan(this.angleB / 2), 0)
-	];
-    }
+    get nagel() { return this.fromTriangleCenterFunction(nagelTriangleCenterFunction); }
+    get nagelCevianA() { return this.cevianAFromTriangleCenterFunction(nagelTriangleCenterFunction); }
+    get nagelCevianB() { return this.cevianBFromTriangleCenterFunction(nagelTriangleCenterFunction); }
+    get nagelCevianC() { return this.cevianCFromTriangleCenterFunction(nagelTriangleCenterFunction); }
 
 }
 
