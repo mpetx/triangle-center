@@ -530,3 +530,5 @@ window.addEventListener("load", () => {
 	});
     });
 });
+
+window.moduleLoaded = true;
