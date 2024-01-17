@@ -252,13 +252,13 @@ const initializeTriangle = () => {
     triangle.vertexCX = rect.width * 0.7;
     triangle.vertexBY = triangle.vertexCY = rect.height * 0.8;
     triangleConfigurations.forEach((config) => {
-	const colorPicker = document.getElementById(config[0]);
-	config[1].forEach((config1) => {
-	    const visibilityCheckbox = document.getElementById(config1[0]);
-	    config1[2].forEach((id) => {
+	const colorPicker = document.getElementById(config["color-picker-id"]);
+	config["visibility-checkboxes"].forEach((checkboxConfig) => {
+	    const checkbox = document.getElementById(checkboxConfig["id"]);
+	    checkboxConfig["target"].forEach((id) => {
 		const elt = document.getElementById(id);
-		elt.setAttribute(config1[1], colorPicker.value);
-		elt.setAttribute("visibility", visibilityCheckbox.checked ? "visible" : "hidden");
+		elt.setAttribute(checkboxConfig["color-attribute"], colorPicker.value);
+		elt.setAttribute("visibility", checkbox.checked ? "visible" : "hidden");
 	    });
 	});
     });
@@ -430,10 +430,10 @@ const triangleVertexMouseUpListener = (e) => {
     document.getElementById("triangle-canvas").removeEventListener("mousemove", canvasMouseMoveListeners[e.target.id]);
 };
 
-const createColorPickerInputListener = (config) => (e) => {
-    config.forEach((config1) => {
-	config1[2].forEach((id) => {
-	    document.getElementById(id).setAttribute(config1[1], e.target.value);
+const createColorPickerInputListener = (checkboxConfs) => (e) => {
+    checkboxConfs.forEach((checkboxConf) => {
+	checkboxConf["target"].forEach((id) => {
+	    document.getElementById(id).setAttribute(checkboxConf["color-attribute"], e.target.value);
 	});
     });
 };
@@ -447,80 +447,145 @@ const createVisibilityCheckboxInputListener = (ids) => (e) => {
 };
 
 const triangleVertexIds = ["triangle__vertex-a", "triangle__vertex-b", "triangle__vertex-c"];
-const triangleConfigurations = [
-    [
-	"centroid-config__color",
-	[
-	    ["centroid-config__centroid", "fill", ["triangle__centroid"]],
-	    ["centroid-config__median", "stroke", ["triangle__median-a", "triangle__median-b", "triangle__median-c"]]
+const triangleConfigurations = [{
+    "color-picker-id": "centroid-config__color",
+    "visibility-checkboxes": [{
+	"id": "centroid-config__centroid",
+	"color-attribute": "fill",
+	"target": ["triangle__centroid"]
+    }, {
+	"id": "centroid-config__median",
+	"color-attribute": "stroke",
+	"target": ["triangle__median-a", "triangle__median-b", "triangle__median-c"]
+    }]
+}, {
+    "color-picker-id": "incenter-config__color",
+    "visibility-checkboxes": [{
+	"id": "incenter-config__incenter",
+	"color-attribute": "fill",
+	"target": ["triangle__incenter"]
+    }, {
+	"id": "incenter-config__internal-angle-bisector",
+	"color-attribute": "stroke",
+	"target": ["triangle__internal-angle-bisector-a", "triangle__internal-angle-bisector-b", "triangle__internal-angle-bisector-c"]
+    }, {
+	"id": "incenter-config__incircle",
+	"color-attribute": "stroke",
+	"target": ["triangle__incircle"]
+    }, {
+	"id": "incenter-config__incircle-radius",
+	"color-attribute": "stroke",
+	"target": ["triangle__incircle-radius-a", "triangle__incircle-radius-b", "triangle__incircle-radius-c"]
+    }]
+}, {
+    "color-picker-id": "circumcenter-config__color",
+    "visibility-checkboxes": [{
+	"id": "circumcenter-config__circumcenter",
+	"color-attribute": "fill",
+	"target": ["triangle__circumcenter"]
+    }, {
+	"id": "circumcenter-config__circumcircle",
+	"color-attribute": "stroke",
+	"target": ["triangle__circumcircle"]
+    }, {
+	"id": "circumcenter-config__edge-bisector",
+	"color-attribute": "stroke",
+	"target": ["triangle__edge-bisector-a", "triangle__edge-bisector-b", "triangle__edge-bisector-c"]
+    }, {
+	"id": "circumcenter-config__circumcircle-radius",
+	"color-attribute": "stroke",
+	"target": ["triangle__circumcircle-radius-a", "triangle__circumcircle-radius-b", "triangle__circumcircle-radius-c"]
+    }]
+}, {
+    "color-picker-id": "orthocenter-config__color",
+    "visibility-checkboxes": [{
+	"id": "orthocenter-config__orthocenter",
+	"color-attribute": "fill",
+	"target": ["triangle__orthocenter"]
+    }, {
+	"id": "orthocenter-config__altitude",
+	"color-attribute": "stroke",
+	"target": ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]
+    }]
+}, {
+    "color-picker-id": "excenter-config__color",
+    "visibility-checkboxes": [{
+	"id": "excenter-config__excenter",
+	"color-attribute": "fill",
+	"target": ["triangle__excenter-a", "triangle__excenter-b", "triangle__excenter-c"]
+    }, {
+	"id": "excenter-config__excircle",
+	"color-attribute": "stroke",
+	"target": ["triangle__excircle-a", "triangle__excircle-b", "triangle__excircle-c"]
+    }, {
+	"id": "excenter-config__external-angle-bisector",
+	"color-attribute": "stroke",
+	"target": [
+	    "triangle__external-angle-bisector-aa", "triangle__external-angle-bisector-ab", "triangle__external-angle-bisector-ac",
+	    "triangle__external-angle-bisector-ba", "triangle__external-angle-bisector-bb", "triangle__external-angle-bisector-bc",
+	    "triangle__external-angle-bisector-ca", "triangle__external-angle-bisector-cb", "triangle__external-angle-bisector-cc"
 	]
-    ], [
-	"incenter-config__color",
-	[
-	    ["incenter-config__incenter", "fill", ["triangle__incenter"]],
-	    ["incenter-config__internal-angle-bisector", "stroke", ["triangle__internal-angle-bisector-a", "triangle__internal-angle-bisector-b", "triangle__internal-angle-bisector-c"]],
-	    ["incenter-config__incircle", "stroke", ["triangle__incircle"]],
-	    ["incenter-config__incircle-radius", "stroke", ["triangle__incircle-radius-a", "triangle__incircle-radius-b", "triangle__incircle-radius-c"]]
+    }, {
+	"id": "excenter-config__excircle-radius",
+	"color-attribute": "stroke",
+	"target": [
+	    "triangle__excircle-radius-aa", "triangle__excircle-radius-ab", "triangle__excircle-radius-ac",
+	    "triangle__excircle-radius-ba", "triangle__excircle-radius-bb", "triangle__excircle-radius-bc",
+	    "triangle__excircle-radius-ca", "triangle__excircle-radius-cb", "triangle__excircle-radius-cc"
 	]
-    ], [
-	"circumcenter-config__color",
-	[
-	    ["circumcenter-config__circumcenter", "fill", ["triangle__circumcenter"]],
-	    ["circumcenter-config__circumcircle", "stroke", ["triangle__circumcircle"]],
-	    ["circumcenter-config__edge-bisector", "stroke", ["triangle__edge-bisector-a", "triangle__edge-bisector-b", "triangle__edge-bisector-c"]],
-	    ["circumcenter-config__circumcircle-radius", "stroke", ["triangle__circumcircle-radius-a", "triangle__circumcircle-radius-b", "triangle__circumcircle-radius-c"]]
-	]
-    ], [
-	"orthocenter-config__color",
-	[
-	    ["orthocenter-config__orthocenter", "fill", ["triangle__orthocenter"]],
-	    ["orthocenter-config__altitude", "stroke", ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]]
-	]
-    ], [
-	"excenter-config__color",
-	[
-	    ["excenter-config__excenter", "fill", ["triangle__excenter-a", "triangle__excenter-b", "triangle__excenter-c"]],
-	    ["excenter-config__excircle", "stroke", ["triangle__excircle-a", "triangle__excircle-b", "triangle__excircle-c"]],
-	    ["excenter-config__external-angle-bisector", "stroke",
-	     ["triangle__external-angle-bisector-aa", "triangle__external-angle-bisector-ab", "triangle__external-angle-bisector-ac",
-	      "triangle__external-angle-bisector-ba", "triangle__external-angle-bisector-bb", "triangle__external-angle-bisector-bc",
-	      "triangle__external-angle-bisector-ca", "triangle__external-angle-bisector-cb", "triangle__external-angle-bisector-cc"]],
-	    ["excenter-config__excircle-radius", "stroke",
-	     ["triangle__excircle-radius-aa", "triangle__excircle-radius-ab", "triangle__excircle-radius-ac",
-	      "triangle__excircle-radius-ba", "triangle__excircle-radius-bb", "triangle__excircle-radius-bc",
-	      "triangle__excircle-radius-ca", "triangle__excircle-radius-cb", "triangle__excircle-radius-cc"]]
-	]
-    ],[
-	"nine-point-circle-config__color",
-	[
-	    ["nine-point-circle-config__center", "fill", ["triangle__nine-point-circle-center"]],
-	    ["nine-point-circle-config__circle", "stroke", ["triangle__nine-point-circle"]]
-	]
-    ], [
-	"lemoine-config__color",
-	[
-	    ["lemoine-config__lemoine", "fill", ["triangle__lemoine"]],
-	    ["lemoine-config__symmedian", "stroke", ["triangle__symmedian-a", "triangle__symmedian-b", "triangle__symmedian-c"]]
-	]
-    ], [
-	"gergonne-config__color",
-	[
-	    ["gergonne-config__gergonne", "fill", ["triangle__gergonne"]],
-	    ["gergonne-config__cevian", "stroke", ["triangle__gergonne-cevian-a", "triangle__gergonne-cevian-b", "triangle__gergonne-cevian-c"]]
-	]
-    ], [
-	"nagel-config__color",
-	[
-	    ["nagel-config__nagel", "fill", ["triangle__nagel"]],
-	    ["nagel-config__cevian", "stroke", ["triangle__nagel-cevian-a", "triangle__nagel-cevian-b", "triangle__nagel-cevian-c"]]
-	]
-    ], [
-	"euler-line-config__color",
-	[
-	    ["euler-line-config__euler-line", "stroke", ["triangle__euler-line"]]
-	]
-    ]
-];
+    }]
+}, {
+    "color-picker-id": "nine-point-circle-config__color",
+    "visibility-checkboxes": [{
+	"id": "nine-point-circle-config__center",
+	"color-attribute": "fill",
+	"target": ["triangle__nine-point-circle-center"]
+    }, {
+	"id": "nine-point-circle-config__circle",
+	"color-attribute": "stroke",
+	"target": ["triangle__nine-point-circle"]
+    }]
+}, {
+    "color-picker-id": "lemoine-config__color",
+    "visibility-checkboxes": [{
+	"id": "lemoine-config__lemoine",
+	"color-attribute": "fill",
+	"target": ["triangle__lemoine"]
+    }, {
+	"id": "lemoine-config__symmedian",
+	"color-attribute": "stroke",
+	"target": ["triangle__symmedian-a", "triangle__symmedian-b", "triangle__symmedian-c"]
+    }]
+}, {
+    "color-picker-id": "gergonne-config__color",
+    "visibility-checkboxes": [{
+	"id": "gergonne-config__gergonne",
+	"color-attribute": "fill",
+	"target": ["triangle__gergonne"]
+    }, {
+	"id": "gergonne-config__cevian",
+	"color-attribute": "stroke",
+	"target": ["triangle__gergonne-cevian-a", "triangle__gergonne-cevian-b", "triangle__gergonne-cevian-c"]
+    }]
+}, {
+    "color-picker-id": "nagel-config__color",
+    "visibility-checkboxes": [{
+	"id": "nagel-config__nagel",
+	"color-attribute": "fill",
+	"target": ["triangle__nagel"]
+    }, {
+	"id": "nagel-config__cevian",
+	"color-attribute": "stroke",
+	"target": ["triangle__nagel-cevian-a", "triangle__nagel-cevian-b", "triangle__nagel-cevian-c"]
+    }]
+}, {
+    "color-picker-id": "euler-line-config__color",
+    "visibility-checkboxes": [{
+	"id": "euler-line-config__euler-line",
+	"color-attribute": "stroke",
+	"target": ["triangle__euler-line"]
+    }]
+}];
 
 window.addEventListener("load", () => {
     initializeTriangle();
@@ -532,10 +597,9 @@ window.addEventListener("load", () => {
 	elt.addEventListener("mouseup", triangleVertexMouseUpListener);
     });
     triangleConfigurations.forEach((config) => {
-	const colorPicker = document.getElementById(config[0]);
-	colorPicker.addEventListener("input", createColorPickerInputListener(config[1]));
-	config[1].forEach((config1) => {
-	    document.getElementById(config1[0]).addEventListener("input", createVisibilityCheckboxInputListener(config1[2]));
+	document.getElementById(config["color-picker-id"]).addEventListener("input", createColorPickerInputListener(config["visibility-checkboxes"]));
+	config["visibility-checkboxes"].forEach((checkboxConfig) => {
+	    document.getElementById(checkboxConfig["id"]).addEventListener("input", createVisibilityCheckboxInputListener(checkboxConfig["target"]));
 	});
     });
 });
