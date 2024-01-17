@@ -3,6 +3,50 @@ const segmentLength = (coord) => {
     return Math.sqrt((coord[1][0] - coord[0][0]) ** 2 + (coord[1][1] - coord[0][1]) ** 2);
 };
 
+const minPoint = (...ps) => {
+    let minxp = ps[0];
+    let minyp = ps[0];
+    let maxx = ps[0][0];
+    let maxy = ps[0][1];
+    for (let i = 1; i < ps.length; ++i) {
+	let p = ps[i];
+	if (p[0] < minxp[0])
+	    minxp = p;
+	if (p[1] < minyp[1])
+	    minyp = p;
+	if (p[0] > maxx)
+	    maxx = p[0];
+	if (p[1] > maxy)
+	    maxy = p[1];
+    }
+    if ((maxx - minxp[0]) > (maxy - minyp[1]))
+	return minxp;
+    else
+	return minyp;
+};
+
+const maxPoint = (...ps) => {
+    let maxxp = ps[0];
+    let maxyp = ps[0];
+    let minx = ps[0][0];
+    let miny = ps[0][1];
+    for (let i = 1; i < ps.length; ++i) {
+	let p = ps[i];
+	if (p[0] > maxxp[0])
+	    maxxp = p;
+	if (p[1] > maxyp[1])
+	    maxyp = p;
+	if (p[0] < minx)
+	    minx = p[0];
+	if (p[1] < miny)
+	    miny = p[1];
+    }
+    if ((maxxp[0] - minx) > (maxyp[1] - miny))
+	return maxxp
+    else
+	return maxyp;
+};
+
 const centroidTriangleCenterFunction = (a, b, c, anga, angb, angc) => 1;
 const incenterTriangleCenterFunction = (a, b, c, anga, angb, angc) => a;
 const circumcenterTriangleCenterFunction = (a, b, c, anga, angb, angc) => Math.sin(anga * 2);
@@ -151,13 +195,23 @@ class Triangle {
 
     get orthocenter() { return this.fromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
 
-    get altitudeA1() { return this.cevianAFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
-    get altitudeB1() { return this.cevianBFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
-    get altitudeC1() { return this.cevianCFromTriangleCenterFunction(orthocenterTriangleCenterFunction); }
+    get altitudeA() {
+	const [p1, p2] = this.cevianAFromTriangleCenterFunction(orthocenterTriangleCenterFunction);
+	const p3 = this.orthocenter;
+	return [minPoint(p1, p2, p3), maxPoint(p1, p2, p3)];
+    }
 
-    get altitudeA2() { return [this.vertexA, this.orthocenter]; }
-    get altitudeB2() { return [this.vertexB, this.orthocenter]; }
-    get altitudeC2() { return [this.vertexC, this.orthocenter]; }
+    get altitudeB() {
+	const [p1, p2] = this.cevianBFromTriangleCenterFunction(orthocenterTriangleCenterFunction);
+	const p3 = this.orthocenter;
+	return [minPoint(p1, p2, p3), maxPoint(p1, p2, p3)];
+    }
+
+    get altitudeC() {
+	const [p1, p2] = this.cevianCFromTriangleCenterFunction(orthocenterTriangleCenterFunction);
+	const p3 = this.orthocenter;
+	return [minPoint(p1, p2, p3), maxPoint(p1, p2, p3)];
+    }
 
     get excenterA() {
 	return this.fromBarycentric(-this.edgeALength, this.edgeBLength, this.edgeCLength);
@@ -331,12 +385,9 @@ const updateTriangle = () => {
     if (document.getElementById("orthocenter-config__orthocenter").checked)
 	setPointPosition("triangle__orthocenter", triangle.orthocenter);
     if (document.getElementById("orthocenter-config__altitude").checked) {
-	setSegmentPosition("triangle__altitude-a-1", triangle.altitudeA1);
-	setSegmentPosition("triangle__altitude-b-1", triangle.altitudeB1);
-	setSegmentPosition("triangle__altitude-c-1", triangle.altitudeC1);
-	setSegmentPosition("triangle__altitude-a-2", triangle.altitudeA2);
-	setSegmentPosition("triangle__altitude-b-2", triangle.altitudeB2);
-	setSegmentPosition("triangle__altitude-c-2", triangle.altitudeC2);
+	setSegmentPosition("triangle__altitude-a", triangle.altitudeA);
+	setSegmentPosition("triangle__altitude-b", triangle.altitudeB);
+	setSegmentPosition("triangle__altitude-c", triangle.altitudeC);
     }
     if (document.getElementById("excenter-config__excenter").checked) {
 	setPointPosition("triangle__excenter-a", triangle.excenterA);
@@ -505,7 +556,7 @@ const triangleConfigurations = [{
     }, {
 	"id": "orthocenter-config__altitude",
 	"color-attribute": "stroke",
-	"target": ["triangle__altitude-a-1", "triangle__altitude-b-1", "triangle__altitude-c-1", "triangle__altitude-a-2", "triangle__altitude-b-2", "triangle__altitude-c-2"]
+	"target": ["triangle__altitude-a", "triangle__altitude-b", "triangle__altitude-c"]
     }]
 }, {
     "color-picker-id": "excenter-config__color",
