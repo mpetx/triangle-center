@@ -58,22 +58,43 @@ const nagelTriangleCenterFunction = (a, b, c, anga, angb, angc) => 1 / Math.tan(
 
 class Triangle {
 
-    vertexAX; vertexAY;
-    vertexBX; vertexBY;
-    vertexCX; vertexCY;
+    #cache;
+    #vertexAX; #vertexAY;
+    #vertexBX; #vertexBY;
+    #vertexCX; #vertexCY;
 
     constructor(
 	vertexAX, vertexAY,
 	vertexBX, vertexBY,
 	vertexCX, vertexCY) {
-	this.vertexAX = vertexAX;
-	this.vertexAY = vertexAY;
-	this.vertexBX = vertexBX;
-	this.vertexBY = vertexBY;
-	this.vertexCX = vertexCX;
-	this.vertexCY = vertexCY;
+	this.#cache = [null, null, null, null, null, null];
+	this.#vertexAX = vertexAX;
+	this.#vertexAY = vertexAY;
+	this.#vertexBX = vertexBX;
+	this.#vertexBY = vertexBY;
+	this.#vertexCX = vertexCX;
+	this.#vertexCY = vertexCY;
     }
 
+    invalidateCache() {
+	for (let i = 0; i < this.#cache.length; ++i)
+	    this.#cache[i] = null;
+    }
+
+    get vertexAX() { return this.#vertexAX; }
+    get vertexAY() { return this.#vertexAY; }
+    get vertexBX() { return this.#vertexBX; }
+    get vertexBY() { return this.#vertexBY; }
+    get vertexCX() { return this.#vertexCX; }
+    get vertexCY() { return this.#vertexCY; }
+
+    set vertexAX(v) { this.invalidateCache(); this.#vertexAX = v; }
+    set vertexAY(v) { this.invalidateCache(); this.#vertexAY = v; }
+    set vertexBX(v) { this.invalidateCache(); this.#vertexBX = v; }
+    set vertexBY(v) { this.invalidateCache(); this.#vertexBY = v; }
+    set vertexCX(v) { this.invalidateCache(); this.#vertexCX = v; }
+    set vertexCY(v) { this.invalidateCache(); this.#vertexCY = v; }
+    
     get vertexA() { return [this.vertexAX, this.vertexAY]; }
     get vertexB() { return [this.vertexBX, this.vertexBY]; }
     get vertexC() { return [this.vertexCX, this.vertexCY]; }
@@ -82,20 +103,58 @@ class Triangle {
     get edgeB() { return [this.vertexC, this.vertexA]; }
     get edgeC() { return [this.vertexA, this.vertexB]; }
 
-    get edgeALength() { return segmentLength(this.edgeA); }
-    get edgeBLength() { return segmentLength(this.edgeB); }
-    get edgeCLength() { return segmentLength(this.edgeC); }
+    get edgeALength() {
+	const cacheValue = this.#cache[0];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = segmentLength(this.edgeA);
+	this.#cache[0] = value;
+	return value;
+    }
+
+    get edgeBLength() {
+	const cacheValue = this.#cache[1];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = segmentLength(this.edgeB);
+	this.#cache[1] = value;
+	return value;
+    }
+
+    get edgeCLength() {
+	const cacheValue = this.#cache[2];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = segmentLength(this.edgeC);
+	this.#cache[2] = value;
+	return value;
+    }
 
     get angleA() {
-	return Math.acos((this.edgeBLength ** 2 + this.edgeCLength ** 2 - this.edgeALength ** 2) / (2 * this.edgeBLength * this.edgeCLength));
+	const cacheValue = this.#cache[3];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = Math.acos((this.edgeBLength ** 2 + this.edgeCLength ** 2 - this.edgeALength ** 2) / (2 * this.edgeBLength * this.edgeCLength));
+	this.#cache[3] = value;
+	return value;
     }
 
     get angleB() {
-	return Math.acos((this.edgeCLength ** 2 + this.edgeALength ** 2 - this.edgeBLength ** 2) / (2 * this.edgeCLength * this.edgeALength));
+	const cacheValue = this.#cache[4];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = Math.acos((this.edgeCLength ** 2 + this.edgeALength ** 2 - this.edgeBLength ** 2) / (2 * this.edgeCLength * this.edgeALength));
+	this.#cache[4] = value;
+	return value;
     }
 
     get angleC() {
-	return Math.acos((this.edgeALength ** 2 + this.edgeBLength ** 2 - this.edgeCLength ** 2) / (2 * this.edgeALength * this.edgeBLength));
+	const cacheValue = this.#cache[5];
+	if (cacheValue !== null)
+	    return cacheValue;
+	const value = Math.acos((this.edgeALength ** 2 + this.edgeBLength ** 2 - this.edgeCLength ** 2) / (2 * this.edgeALength * this.edgeBLength));
+	this.#cache[5] = value;
+	return value;
     }
     
     fromBarycentric(a, b, c) {
