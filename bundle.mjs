@@ -238,6 +238,7 @@ class Triangle {
     get nagelCevianB() { return this.cevianBFromTriangleCenterFunction(nagelTriangleCenterFunction); }
     get nagelCevianC() { return this.cevianCFromTriangleCenterFunction(nagelTriangleCenterFunction); }
 
+    get eulerLine() { return [this.circumcenter, this.orthocenter]; }
 }
 
 const triangle = new Triangle(0, 0, 0, 0, 0, 0);
@@ -394,6 +395,9 @@ const updateTriangle = () => {
 	setSegmentPosition("triangle__nagel-cevian-b", triangle.nagelCevianB);
 	setSegmentPosition("triangle__nagel-cevian-c", triangle.nagelCevianC);
     }
+    if (document.getElementById("euler-line-config__euler-line").checked) {
+	setSegmentPosition("triangle__euler-line", triangle.eulerLine);
+    }
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -509,6 +513,11 @@ const triangleConfigurations = [
 	[
 	    ["nagel-config__nagel", "fill", ["triangle__nagel"]],
 	    ["nagel-config__cevian", "stroke", ["triangle__nagel-cevian-a", "triangle__nagel-cevian-b", "triangle__nagel-cevian-c"]]
+	]
+    ], [
+	"euler-line-config__color",
+	[
+	    ["euler-line-config__euler-line", "stroke", ["triangle__euler-line"]]
 	]
     ]
 ];

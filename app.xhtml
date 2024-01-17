@@ -15,6 +15,9 @@
 	    <svg xmlns="http://www.w3.org/2000/svg"
 		 id="triangle-canvas">
 		<g>
+		    <line id="triangle__euler-line" stroke-width="1" />
+		</g>
+		<g>
 		    <line id="triangle__nagel-cevian-a" stroke-width="1" />
 		    <line id="triangle__nagel-cevian-b" stroke-width="1" />
 		    <line id="triangle__nagel-cevian-c" stroke-width="1" />
@@ -230,13 +233,20 @@
 			ナーゲル点を通るチェバ線
 		    </label>
 		</div>
+		<div class="triangle-config-container">
+		    <input type="color" id="euler-line-config__color" value="#d2b48c" />
+		    <label>
+			<input type="checkbox" id="euler-line-config__euler-line" />
+			オイラー線
+		    </label>
+		</div>
 	    </div>
 	</main>
 	<script>
-	  window.addEventListener("load", function () {
-	    if (!window.moduleLoaded)
-	      window.alert("このアプリはお使いのブラウザーでは正しく動作しない可能性があります。\nMozilla Firefoxなどをご利用ください。");
-	  });
+	 window.addEventListener("load", function () {
+	     if (!window.moduleLoaded)
+		 window.alert("このアプリはお使いのブラウザーでは正しく動作しない可能性があります。\nMozilla Firefoxなどをご利用ください。");
+	 });
 	</script>
     </body>
 </html>
