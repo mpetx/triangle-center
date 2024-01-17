@@ -297,15 +297,18 @@ class Triangle {
 
 const triangle = new Triangle(0, 0, 0, 0, 0, 0);
 
+const initialTriangle = [[.45, .2], [.3, .8], [.7, .8]];
+
 const initializeTriangle = () => {
     const canvas = document.getElementById("triangle-canvas");
     const rect = canvas.getBoundingClientRect();
-    triangle.vertexAX = rect.width * 0.45;
-    triangle.vertexAY = rect.height * 0.2;
-    triangle.vertexBX = rect.width * 0.3;
-    triangle.vertexCX = rect.width * 0.7;
-    triangle.vertexBY = triangle.vertexCY = rect.height * 0.8;
-    triangleConfigurations.forEach((config) => {
+    triangle.vertexAX = rect.width * initialTriangle[0][0];
+    triangle.vertexAY = rect.height * initialTriangle[0][1];
+    triangle.vertexBX = rect.width * initialTriangle[1][0];
+    triangle.vertexBY = rect.height * initialTriangle[1][1];
+    triangle.vertexCX = rect.width * initialTriangle[2][0];
+    triangle.vertexCY = rect.height * initialTriangle[2][1];
+    triangleFormConfigurations.forEach((config) => {
 	const colorPicker = document.getElementById(config["color-picker-id"]);
 	config["visibility-checkboxes"].forEach((checkboxConfig) => {
 	    const checkbox = document.getElementById(checkboxConfig["id"]);
@@ -340,6 +343,172 @@ const setCirclePosition = (id, coords) => {
     elt.setAttribute("r", coords[1]);
 };
 
+const triangleUpdateConfigurations = [{
+    "checkbox-id": "incenter-config__incenter",
+    "type": "point",
+    "target": [{"id": "triangle__incenter", "get-shape": () => triangle.incenter}]
+}, {
+    "checkbox-id": "incenter-config__internal-angle-bisector",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__internal-angle-bisector-a", "get-shape": () => triangle.internalAngleBisectorA},
+	{"id": "triangle__internal-angle-bisector-b", "get-shape": () => triangle.internalAngleBisectorB},
+	{"id": "triangle__internal-angle-bisector-c", "get-shape": () => triangle.internalAngleBisectorC}
+    ]
+}, {
+    "checkbox-id": "incenter-config__incircle-radius",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__incircle-radius-a", "get-shape": () => triangle.incircleRadiusA},
+	{"id": "triangle__incircle-radius-b", "get-shape": () => triangle.incircleRadiusB},
+	{"id": "triangle__incircle-radius-c", "get-shape": () => triangle.incircleRadiusC}
+    ]
+}, {
+    "checkbox-id": "incenter-config__incircle",
+    "type": "circle",
+    "target": [{"id": "triangle__incircle", "get-shape": () => triangle.incircle}]
+}, {
+    "checkbox-id": "centroid-config__centroid",
+    "type": "point",
+    "target": [{"id": "triangle__centroid", "get-shape": () => triangle.centroid}]
+}, {
+    "checkbox-id": "centroid-config__median",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__median-a", "get-shape": () => triangle.medianA},
+	{"id": "triangle__median-b", "get-shape": () => triangle.medianB},
+	{"id": "triangle__median-c", "get-shape": () => triangle.medianC}
+    ]
+}, {
+    "checkbox-id": "circumcenter-config__circumcenter",
+    "type": "point",
+    "target": [{"id": "triangle__circumcenter", "get-shape": () => triangle.circumcenter}]
+}, {
+    "checkbox-id": "circumcenter-config__circumcircle",
+    "type": "circle",
+    "target": [{"id": "triangle__circumcircle", "get-shape": () => triangle.circumcircle}]
+}, {
+    "checkbox-id": "circumcenter-config__edge-bisector",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__edge-bisector-a", "get-shape": () => triangle.edgeBisectorA},
+	{"id": "triangle__edge-bisector-b", "get-shape": () => triangle.edgeBisectorB},
+	{"id": "triangle__edge-bisector-c", "get-shape": () => triangle.edgeBisectorC}
+    ]
+}, {
+    "checkbox-id": "circumcenter-config__circumcircle-radius",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__circumcircle-radius-a", "get-shape": () => triangle.circumcircleRadiusA},
+	{"id": "triangle__circumcircle-radius-b", "get-shape": () => triangle.circumcircleRadiusB},
+	{"id": "triangle__circumcircle-radius-c", "get-shape": () => triangle.circumcircleRadiusC}
+    ]
+}, {
+    "checkbox-id": "orthocenter-config__orthocenter",
+    "type": "point",
+    "target": [{"id": "triangle__orthocenter", "get-shape": () => triangle.orthocenter}]
+}, {
+    "checkbox-id": "orthocenter-config__altitude",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__altitude-a", "get-shape": () => triangle.altitudeA},
+	{"id": "triangle__altitude-b", "get-shape": () => triangle.altitudeB},
+	{"id": "triangle__altitude-c", "get-shape": () => triangle.altitudeC}
+    ]
+}, {
+    "checkbox-id": "excenter-config__excenter",
+    "type": "point",
+    "target": [
+	{"id": "triangle__excenter-a", "get-shape": () => triangle.excenterA},
+	{"id": "triangle__excenter-b", "get-shape": () => triangle.excenterB},
+	{"id": "triangle__excenter-c", "get-shape": () => triangle.excenterC}
+    ]
+}, {
+    "checkbox-id": "excenter-config__excircle",
+    "type": "circle",
+    "target": [
+	{"id": "triangle__excircle-a", "get-shape": () => triangle.excircleA},
+	{"id": "triangle__excircle-b", "get-shape": () => triangle.excircleB},
+	{"id": "triangle__excircle-c", "get-shape": () => triangle.excircleC}
+    ]
+}, {
+    "checkbox-id": "excenter-config__external-angle-bisector",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__external-angle-bisector-aa", "get-shape": () => triangle.externalAngleBisectorAA},
+	{"id": "triangle__external-angle-bisector-ab", "get-shape": () => triangle.externalAngleBisectorAB},
+	{"id": "triangle__external-angle-bisector-ac", "get-shape": () => triangle.externalAngleBisectorAC},
+	{"id": "triangle__external-angle-bisector-ba", "get-shape": () => triangle.externalAngleBisectorBA},
+	{"id": "triangle__external-angle-bisector-bb", "get-shape": () => triangle.externalAngleBisectorBB},
+	{"id": "triangle__external-angle-bisector-bc", "get-shape": () => triangle.externalAngleBisectorBC},
+	{"id": "triangle__external-angle-bisector-ca", "get-shape": () => triangle.externalAngleBisectorCA},
+	{"id": "triangle__external-angle-bisector-cb", "get-shape": () => triangle.externalAngleBisectorCB},
+	{"id": "triangle__external-angle-bisector-cc", "get-shape": () => triangle.externalAngleBisectorCC}
+    ]
+}, {
+    "checkbox-id": "excenter-config__excircle-radius",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__excircle-radius-aa", "get-shape": () => triangle.excircleRadiusAA},
+	{"id": "triangle__excircle-radius-ab", "get-shape": () => triangle.excircleRadiusAB},
+	{"id": "triangle__excircle-radius-ac", "get-shape": () => triangle.excircleRadiusAC},
+	{"id": "triangle__excircle-radius-ba", "get-shape": () => triangle.excircleRadiusBA},
+	{"id": "triangle__excircle-radius-bb", "get-shape": () => triangle.excircleRadiusBB},
+	{"id": "triangle__excircle-radius-bc", "get-shape": () => triangle.excircleRadiusBC},
+	{"id": "triangle__excircle-radius-ca", "get-shape": () => triangle.excircleRadiusCA},
+	{"id": "triangle__excircle-radius-cb", "get-shape": () => triangle.excircleRadiusCB},
+	{"id": "triangle__excircle-radius-cc", "get-shape": () => triangle.excircleRadiusCC}
+    ]	
+}, {
+    "checkbox-id": "nine-point-circle-config__center",
+    "type": "point",
+    "target": [{"id": "triangle__nine-point-circle-center", "get-shape": () => triangle.ninePointCircleCenter}]
+}, {
+    "checkbox-id": "nine-point-circle-config__circle",
+    "type": "circle",
+    "target": [{"id": "triangle__nine-point-circle", "get-shape": () => triangle.ninePointCircle}]
+}, {
+    "checkbox-id": "lemoine-config__lemoine",
+    "type": "point",
+    "target": [{"id": "triangle__lemoine", "get-shape": () => triangle.lemoine}]
+}, {
+    "checkbox-id": "lemoine-config__symmedian",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__symmedian-a", "get-shape": () => triangle.symmedianA},
+	{"id": "triangle__symmedian-b", "get-shape": () => triangle.symmedianB},
+	{"id": "triangle__symmedian-c", "get-shape": () => triangle.symmedianC}
+    ]
+}, {
+    "checkbox-id": "gergonne-config__gergonne",
+    "type": "point",
+    "target": [{"id": "triangle__gergonne", "get-shape": () => triangle.gergonne}]
+}, {
+    "checkbox-id": "gergonne-config__cevian",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__gergonne-cevian-a", "get-shape": () => triangle.gergonneCevianA},
+	{"id": "triangle__gergonne-cevian-b", "get-shape": () => triangle.gergonneCevianB},
+	{"id": "triangle__gergonne-cevian-c", "get-shape": () => triangle.gergonneCevianC}
+    ]
+}, {
+    "checkbox-id": "nagel-config__nagel",
+    "type": "point",
+    "target": [{"id": "triangle__nagel", "get-shape": () => triangle.nagel}]
+}, {
+    "checkbox-id": "nagel-config__cevian",
+    "type": "segment",
+    "target": [
+	{"id": "triangle__nagel-cevian-a", "get-shape": () => triangle.nagelCevianA},
+	{"id": "triangle__nagel-cevian-b", "get-shape": () => triangle.nagelCevianB},
+	{"id": "triangle__nagel-cevian-c", "get-shape": () => triangle.nagelCevianC}
+    ]
+}, {
+    "checkbox-id": "euler-line-config__euler-line",
+    "type": "segment",
+    "target": [{"id": "triangle__euler-line", "get-shape": () => triangle.eulerLine}]
+}];
+
 const updateTriangle = () => {
     setPointPosition("triangle__vertex-a", triangle.vertexA);
     setPointPosition("triangle__vertex-b", triangle.vertexB);
@@ -347,108 +516,22 @@ const updateTriangle = () => {
     setSegmentPosition("triangle__edge-a", triangle.edgeA);
     setSegmentPosition("triangle__edge-b", triangle.edgeB);
     setSegmentPosition("triangle__edge-c", triangle.edgeC);
-    if (document.getElementById("incenter-config__incenter").checked)
-	setPointPosition("triangle__incenter", triangle.incenter);
-    if (document.getElementById("incenter-config__internal-angle-bisector").checked) {
-	setSegmentPosition("triangle__internal-angle-bisector-a", triangle.internalAngleBisectorA);
-	setSegmentPosition("triangle__internal-angle-bisector-b", triangle.internalAngleBisectorB);
-	setSegmentPosition("triangle__internal-angle-bisector-c", triangle.internalAngleBisectorC);
-    }
-    if (document.getElementById("incenter-config__incircle-radius")) {
-	setSegmentPosition("triangle__incircle-radius-a", triangle.incircleRadiusA);
-	setSegmentPosition("triangle__incircle-radius-b", triangle.incircleRadiusB);
-	setSegmentPosition("triangle__incircle-radius-c", triangle.incircleRadiusC);
-    }
-    if (document.getElementById("incenter-config__incircle").checked)
-	setCirclePosition("triangle__incircle", triangle.incircle);
-    if (document.getElementById("centroid-config__centroid").checked)
-	setPointPosition("triangle__centroid", triangle.centroid);
-    if (document.getElementById("centroid-config__median").checked) {
-	setSegmentPosition("triangle__median-a", triangle.medianA);
-	setSegmentPosition("triangle__median-b", triangle.medianB);
-	setSegmentPosition("triangle__median-c", triangle.medianC);
-    }
-    if (document.getElementById("circumcenter-config__circumcenter").checked)
-	setPointPosition("triangle__circumcenter", triangle.circumcenter);
-    if (document.getElementById("circumcenter-config__circumcircle").checked)
-	setCirclePosition("triangle__circumcircle", triangle.circumcircle);
-    if (document.getElementById("circumcenter-config__edge-bisector").checked) {
-	setSegmentPosition("triangle__edge-bisector-a", triangle.edgeBisectorA);
-	setSegmentPosition("triangle__edge-bisector-b", triangle.edgeBisectorB);
-	setSegmentPosition("triangle__edge-bisector-c", triangle.edgeBisectorC);
-    }
-    if (document.getElementById("circumcenter-config__circumcircle-radius").checked) {
-	setSegmentPosition("triangle__circumcircle-radius-a", triangle.circumcircleRadiusA);
-	setSegmentPosition("triangle__circumcircle-radius-b", triangle.circumcircleRadiusB);
-	setSegmentPosition("triangle__circumcircle-radius-c", triangle.circumcircleRadiusC);
-    }
-    if (document.getElementById("orthocenter-config__orthocenter").checked)
-	setPointPosition("triangle__orthocenter", triangle.orthocenter);
-    if (document.getElementById("orthocenter-config__altitude").checked) {
-	setSegmentPosition("triangle__altitude-a", triangle.altitudeA);
-	setSegmentPosition("triangle__altitude-b", triangle.altitudeB);
-	setSegmentPosition("triangle__altitude-c", triangle.altitudeC);
-    }
-    if (document.getElementById("excenter-config__excenter").checked) {
-	setPointPosition("triangle__excenter-a", triangle.excenterA);
-	setPointPosition("triangle__excenter-b", triangle.excenterB);
-	setPointPosition("triangle__excenter-c", triangle.excenterC);
-    }
-    if (document.getElementById("excenter-config__excircle").checked) {
-	setCirclePosition("triangle__excircle-a", triangle.excircleA);
-	setCirclePosition("triangle__excircle-b", triangle.excircleB);
-	setCirclePosition("triangle__excircle-c", triangle.excircleC);
-    }
-    if (document.getElementById("excenter-config__external-angle-bisector").checked) {
-	setSegmentPosition("triangle__external-angle-bisector-aa", triangle.externalAngleBisectorAA);
-	setSegmentPosition("triangle__external-angle-bisector-ab", triangle.externalAngleBisectorAB);
-	setSegmentPosition("triangle__external-angle-bisector-ac", triangle.externalAngleBisectorAC);
-	setSegmentPosition("triangle__external-angle-bisector-ba", triangle.externalAngleBisectorBA);
-	setSegmentPosition("triangle__external-angle-bisector-bb", triangle.externalAngleBisectorBB);
-	setSegmentPosition("triangle__external-angle-bisector-bc", triangle.externalAngleBisectorBC);
-	setSegmentPosition("triangle__external-angle-bisector-ca", triangle.externalAngleBisectorCA);
-	setSegmentPosition("triangle__external-angle-bisector-cb", triangle.externalAngleBisectorCB);
-	setSegmentPosition("triangle__external-angle-bisector-cc", triangle.externalAngleBisectorCC);
-    }
-    if (document.getElementById("excenter-config__excircle-radius").checked) {
-	setSegmentPosition("triangle__excircle-radius-aa", triangle.excircleRadiusAA);
-	setSegmentPosition("triangle__excircle-radius-ab", triangle.excircleRadiusAB);
-	setSegmentPosition("triangle__excircle-radius-ac", triangle.excircleRadiusAC);
-	setSegmentPosition("triangle__excircle-radius-ba", triangle.excircleRadiusBA);
-	setSegmentPosition("triangle__excircle-radius-bb", triangle.excircleRadiusBB);
-	setSegmentPosition("triangle__excircle-radius-bc", triangle.excircleRadiusBC);
-	setSegmentPosition("triangle__excircle-radius-ca", triangle.excircleRadiusCA);
-	setSegmentPosition("triangle__excircle-radius-cb", triangle.excircleRadiusCB);
-	setSegmentPosition("triangle__excircle-radius-cc", triangle.excircleRadiusCC);
-    }
-    if (document.getElementById("nine-point-circle-config__center").checked)
-	setPointPosition("triangle__nine-point-circle-center", triangle.ninePointCircleCenter);
-    if (document.getElementById("nine-point-circle-config__circle").checked)
-	setCirclePosition("triangle__nine-point-circle", triangle.ninePointCircle);
-    if (document.getElementById("lemoine-config__lemoine").checked)
-	setPointPosition("triangle__lemoine", triangle.lemoine);
-    if (document.getElementById("lemoine-config__symmedian").checked) {
-	setSegmentPosition("triangle__symmedian-a", triangle.symmedianA);
-	setSegmentPosition("triangle__symmedian-b", triangle.symmedianB);
-	setSegmentPosition("triangle__symmedian-c", triangle.symmedianC);
-    }
-    if (document.getElementById("gergonne-config__gergonne").checked)
-	setPointPosition("triangle__gergonne", triangle.gergonne);
-    if (document.getElementById("gergonne-config__cevian").checked) {
-	setSegmentPosition("triangle__gergonne-cevian-a", triangle.gergonneCevianA);
-	setSegmentPosition("triangle__gergonne-cevian-b", triangle.gergonneCevianB);
-	setSegmentPosition("triangle__gergonne-cevian-c", triangle.gergonneCevianC);
-    }
-    if (document.getElementById("nagel-config__nagel").checked)
-	setPointPosition("triangle__nagel", triangle.nagel);
-    if (document.getElementById("nagel-config__cevian").checked) {
-	setSegmentPosition("triangle__nagel-cevian-a", triangle.nagelCevianA);
-	setSegmentPosition("triangle__nagel-cevian-b", triangle.nagelCevianB);
-	setSegmentPosition("triangle__nagel-cevian-c", triangle.nagelCevianC);
-    }
-    if (document.getElementById("euler-line-config__euler-line").checked) {
-	setSegmentPosition("triangle__euler-line", triangle.eulerLine);
-    }
+    triangleUpdateConfigurations.forEach((config) => {
+	const checkbox = document.getElementById(config["checkbox-id"]);
+	config["target"].forEach((targetConfig) => {
+	    switch (config["type"]) {
+	    case "point":
+		setPointPosition(targetConfig["id"], targetConfig["get-shape"]());
+		break;
+	    case "segment":
+		setSegmentPosition(targetConfig["id"], targetConfig["get-shape"]());
+		break;
+	    case "circle":
+		setCirclePosition(targetConfig["id"], targetConfig["get-shape"]());
+		break;
+	    }
+	});
+    });
 };
 
 const triangleVertexMouseEnterListener = (e) => {
@@ -498,7 +581,7 @@ const createVisibilityCheckboxInputListener = (ids) => (e) => {
 };
 
 const triangleVertexIds = ["triangle__vertex-a", "triangle__vertex-b", "triangle__vertex-c"];
-const triangleConfigurations = [{
+const triangleFormConfigurations = [{
     "color-picker-id": "centroid-config__color",
     "visibility-checkboxes": [{
 	"id": "centroid-config__centroid",
@@ -647,7 +730,7 @@ window.addEventListener("load", () => {
 	elt.addEventListener("mousedown", triangleVertexMouseDownListener);
 	elt.addEventListener("mouseup", triangleVertexMouseUpListener);
     });
-    triangleConfigurations.forEach((config) => {
+    triangleFormConfigurations.forEach((config) => {
 	document.getElementById(config["color-picker-id"]).addEventListener("input", createColorPickerInputListener(config["visibility-checkboxes"]));
 	config["visibility-checkboxes"].forEach((checkboxConfig) => {
 	    document.getElementById(checkboxConfig["id"]).addEventListener("input", createVisibilityCheckboxInputListener(checkboxConfig["target"]));
